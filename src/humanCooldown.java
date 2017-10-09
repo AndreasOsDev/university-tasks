@@ -16,6 +16,7 @@ public class humanCooldown {
                 "- Each line corresponds to %.2f hours.\n" +
                 "- Each # corresponds to %.2f percentage units.\n " +
                 "===============================================\n", timeRange,percentValue);
+        System.out.println();
         printArray2d(array2d);
     }
 
@@ -24,7 +25,6 @@ public class humanCooldown {
         for (int i = 0; i < numSamples; i++) {
             tempCooldown[i] = Forensic.cooldown(temperature);
         }
-        System.out.println(tempCooldown.length);
         return tempCooldown;
     }
     private static double[] countsFromArray(double[] array, int numRanges){
@@ -32,7 +32,7 @@ public class humanCooldown {
         double maxValue = maxFromArray(array);
         double minValue = minFromArray(array);
         double rangeSize = (maxValue-minValue)/numRanges;
-        for (int i = 0; i < numRanges; i++) {
+        for (int i = 0; i < array.length; i++) {
             for (int j = 0; j < numRanges; j++) {
                 if (j * rangeSize <= array[i] - minValue && array[i] - minValue < rangeSize * (j + 1)) {
                     counts[j] += 1.0;
@@ -42,13 +42,6 @@ public class humanCooldown {
                 counts[counts.length-1] += 1;
             }
         }
-        for (int i = 0; i < counts.length; i++) {
-            System.out.println(counts[i]);
-        }
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
         return counts;
     }
     private static String[][] array2dFromCounts(double[] counts){
@@ -56,7 +49,6 @@ public class humanCooldown {
         int maxValue = (int) maxFromArray(counts);
         String [][] array2d = new String[counts.length][PRINT_WIDTH];
         for (int i = 0; i < array2d.length; i++) {
-            System.out.println(counts[i]);
             for (int j = 0; j < array2d[i].length; j++) {
                 if (j<((counts[i]*PRINT_WIDTH)/maxValue)){
                     array2d[i][j] = "#";
@@ -73,6 +65,7 @@ public class humanCooldown {
             for (String anAnArray2d : anArray2d) {
                 System.out.print(anAnArray2d);
             }
+            System.out.println();
         }
     }
     private static double minFromArray(double[] array){
