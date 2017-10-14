@@ -2,6 +2,7 @@ public class humanCooldown {
     private final static int numSamples = 100000;
     private final static int numRanges = 20;
     private final static int temperature = 27;
+
     public static void main(String[] args) {
         double[] array = cooldownSamples(temperature, numSamples);
         double[] counts = countsFromArray(array, numRanges);
@@ -10,13 +11,15 @@ public class humanCooldown {
     }
 
     private static void printReport(String[][] array2d, double minValue, double maxValue) {
-        double timeRange = (maxValue-minValue)/numRanges;
-        double percentValue = ((float) numRanges/numSamples)*100;
+        double timeRange = (maxValue - minValue) / numRanges;
+        double percentValue = ((float) numRanges / numSamples) * 100;
         System.out.format("Time of death probability distribution\n" +
                 "- Each line corresponds to %.2f hours.\n" +
                 "- Each # corresponds to %.2f percentage units.\n " +
-                "===============================================\n", timeRange,percentValue);
+                "===============================================\n", timeRange, percentValue);
+        System.out.format("The minimum time for the body to cool is %.3f hours\n\n\n",minValue);
         printArray2d(array2d);
+        System.out.format("\n\n\nThe maximum time for the body to cool is %.3f hours",maxValue);
     }
 
     private static double[] cooldownSamples(int temperature, int numSamples) {
@@ -24,70 +27,66 @@ public class humanCooldown {
         for (int i = 0; i < numSamples; i++) {
             tempCooldown[i] = Forensic.cooldown(temperature);
         }
-        System.out.println(tempCooldown.length);
         return tempCooldown;
     }
-    private static double[] countsFromArray(double[] array, int numRanges){
+
+    private static double[] countsFromArray(double[] array, int numRanges) {
         double[] counts = new double[numRanges];
         double maxValue = maxFromArray(array);
         double minValue = minFromArray(array);
-        double rangeSize = (maxValue-minValue)/numRanges;
-        for (int i = 0; i < numRanges; i++) {
+        double rangeSize = (maxValue - minValue) / numRanges;
+        for (int i = 0; i < numSamples; i++) {
             for (int j = 0; j < numRanges; j++) {
                 if (j * rangeSize <= array[i] - minValue && array[i] - minValue < rangeSize * (j + 1)) {
                     counts[j] += 1.0;
                 }
             }
-            if(array[i]==maxValue){
-                counts[counts.length-1] += 1;
+            if (array[i] == maxValue) {
+                counts[counts.length - 1] += 1;
             }
         }
-        for (int i = 0; i < counts.length; i++) {
-            System.out.println(counts[i]);
-        }
-        System.out.println();
-        System.out.println();
-        System.out.println();
-        System.out.println();
         return counts;
     }
-    private static String[][] array2dFromCounts(double[] counts){
+
+    private static String[][] array2dFromCounts(double[] counts) {
         final int PRINT_WIDTH = 50;
         int maxValue = (int) maxFromArray(counts);
-        String [][] array2d = new String[counts.length][PRINT_WIDTH];
+        String[][] array2d = new String[counts.length][PRINT_WIDTH];
         for (int i = 0; i < array2d.length; i++) {
-            System.out.println(counts[i]);
             for (int j = 0; j < array2d[i].length; j++) {
-                if (j<((counts[i]*PRINT_WIDTH)/maxValue)){
+                if (j < ((counts[i] * PRINT_WIDTH) / maxValue)) {
                     array2d[i][j] = "#";
-                }
-                else{
+                } else {
                     array2d[i][j] = " ";
                 }
             }
         }
         return array2d;
     }
-    private static void printArray2d(String[][] array2d){
-        for (String[] anArray2d : array2d) {
-            for (String anAnArray2d : anArray2d) {
-                System.out.print(anAnArray2d);
+
+    private static void printArray2d(String[][] array2d) {
+        for (String[] line : array2d) {
+            for (String lineElement : line) {
+                System.out.print(lineElement);
             }
+            System.out.println();
         }
     }
-    private static double minFromArray(double[] array){
+
+    private static double minFromArray(double[] array) {
         double minvalue = array[0];
         for (int i = 1; i < array.length; i++) {
-            if(minvalue > array[i]){
+            if (minvalue > array[i]) {
                 minvalue = array[i];
             }
         }
         return minvalue;
     }
-    private static double maxFromArray(double[] array){
+
+    private static double maxFromArray(double[] array) {
         double maxvalue = array[0];
         for (int i = 1; i < array.length; i++) {
-            if(maxvalue < array[i]){
+            if (maxvalue < array[i]) {
                 maxvalue = array[i];
             }
         }
